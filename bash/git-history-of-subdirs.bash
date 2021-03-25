@@ -61,14 +61,15 @@ for current_dir in $(find . -maxdepth 1 -type d); do (
     then
         # Always spit out the basic stats to stdout
         # %H,%cs,%cN,%s = commit hash,date,committer name,subject (see https://git-scm.com/docs/pretty-formats for more)
-        number_of_git_changes_in_subdir=$(git log --no-merges --after="${number_of_days} days ago" --pretty="$PWD,${current_dir},%H,%cs,%cN,%s" -- "$current_dir" | wc -l)
+        number_of_git_changes_in_subdir=$(git log --no-merges --after="${number_of_days} days ago" -- "$current_dir" | wc -l)
         (echo "git log entries for $current_dir: $number_of_git_changes_in_subdir") | tr -d "\n" 
         echo "" 
 
         # only export the results to a file if -e is specified
         if [ "$export_to_file" ]
         then
-            (git log --no-merges --after="${number_of_days} days ago" --pretty="$PWD,${current_dir},%H,%cs,%cN,%s" -- "$current_dir") >> "$starting_dir"/export.csv
+        # Use sed to remove any commas from the %s subject of the commit
+            (git log --no-merges --after="${number_of_days} days ago" --pretty="$PWD^^^${current_dir}^^^%h^^^%cs^^^%cN^^^%s" -- "$current_dir") | sed -e 's/,/ /g' | sed -e 's/\^^^/,/g' >> "$starting_dir"/export.csv
         fi
     fi
 ); done
