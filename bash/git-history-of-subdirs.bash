@@ -47,6 +47,7 @@ else
     cd "$path_to_scan" || exit
 fi
 
+
 #if -d wasn't specified, default to 90
 if [ "$number_of_days" == "" ]; then
     number_of_days="90 days ago"
