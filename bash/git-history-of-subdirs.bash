@@ -31,7 +31,7 @@ while getopts ":p:d:e" o; do
         e)
             export_to_file=true    
             starting_dir=$PWD
-            echo -n "" > "$starting_dir/export.txt"
+            echo -n "" > "$starting_dir/export.csv"
             ;;
         *)
             usage
@@ -66,7 +66,7 @@ for current_dir in $(find . -maxdepth 1 -type d); do (
         # only export the results to a file if -e is specified
         if [ "$export_to_file" ]
         then
-            (git log --no-merges --after="${number_of_days} days ago" --pretty="${path_to_scan},${current_dir},%H,%cs,%cl,%cs,%s" -- "$current_dir") >> "$starting_dir"/export.txt
+            (git log --no-merges --after="${number_of_days} days ago" --pretty="${path_to_scan},${current_dir},%H,%cs,%cl,%cs,%s" -- "$current_dir") >> "$starting_dir"/export.csv
         fi
     fi
 ); done
